@@ -16,7 +16,7 @@ ws.append(["Più", "parole", "in", "una", "istruzione"])
 ws.append(["prova"])
 """
 
-wb = load_workbook("Trading_statistics.xlsx")
+wb = load_workbook("../Trading_statistics.xlsx")
 ws = wb.active
 for row in range(1, 100):
     for col in range(1, 5):
