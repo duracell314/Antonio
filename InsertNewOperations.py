@@ -2,31 +2,9 @@ from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 import datetime
 
-
-def check_if_duplicated() -> bool:
-    """
-    Thi function check if what we want to insert is already in.
-    :return: True is already inserted.
-    """
-    result = True
-    for i in range(ROW_OFFSET, new_row + ROW_OFFSET):
-        # We cannot check the data now, for this reason we skip position 2 and 3.
-        for j in range(1, 5, 3):
-            operation = New_Operations[i - 2]
-            data = operation[j - 1]
-            # Convert the column number into the letter
-            char = get_column_letter(j)
-            dummy = ws[char + str(i)].value
-            if dummy == data:
-                pass
-            else:
-                result = False
-                break
-    return result
-
-
 """
- As first thing insert financial results here:
+ Data necessary to compile by the user.
+ Insert the data of the operation then insert financial results :
 """
 Open_Date = datetime.date(2021, 12, 11)
 Close_Date = datetime.date(2021, 12, 11)
@@ -38,6 +16,36 @@ New_Operations = [
     ["STOC3", Open_Date, Close_Date, 1.94],
 ]
 
+
+def check_if_duplicated() -> bool:
+    """
+    Thi function checks if what we want to insert is already in.
+    So far was not possible to check the date, because the data we read from excel is a smaller data than the data we
+    create in python environment (it contains also the hours, minutes and the seconds),
+    so the comparison will always ba False.
+    Bugfix is not urgent.
+    :return: True is already inserted.
+    """
+    result = True
+    for i in range(ROW_OFFSET, new_row + ROW_OFFSET):
+        # We cannot check the data now, for this reason we skip position 2 and 3.
+        for j in range(1, 5, 3):
+            op = New_Operations[i - ROW_OFFSET]
+            d = op[j - 1]
+            # Convert the column number into the letter
+            c = get_column_letter(j)
+            dummy = ws[c + str(i)].value
+            if dummy == d:
+                pass
+            else:
+                # If just one Data is different we have no duplicated data.
+                result = False
+                break
+    return result
+
+
+# "ROW OFFSET" is the row we actually start to work in excel sheet.
+# Since the first is kept for the heading we start from position two.
 ROW_OFFSET = 2
 wb = load_workbook("Trading_statistics.xlsx")
 ws = wb.active
