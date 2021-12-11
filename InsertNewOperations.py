@@ -50,6 +50,9 @@ ROW_OFFSET = 2
 wb = load_workbook("Trading_statistics.xlsx")
 ws = wb.active
 
+# TODO: dobbiamo selezionare noi il foglio attivo. Come si fa?
+
+
 # Calculate necessary rows
 new_row = len(New_Operations)
 
