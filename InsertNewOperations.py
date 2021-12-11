@@ -28,13 +28,14 @@ def check_if_duplicated() -> bool:
     """
     result = True
     for i in range(ROW_OFFSET, new_row + ROW_OFFSET):
+        # TODO: check how to improve the comparison of date.
         # We cannot check the data now, for this reason we skip position 2 and 3.
         for j in range(1, 5, 3):
             op = New_Operations[i - ROW_OFFSET]
             d = op[j - 1]
             # Convert the column number into the letter
             c = get_column_letter(j)
-            dummy = ws[c + str(i)].value
+            dummy = ws.cell(i, j).value
             if dummy == d:
                 pass
             else:
@@ -48,9 +49,9 @@ def check_if_duplicated() -> bool:
 # Since the first is kept for the heading we start from position two.
 ROW_OFFSET = 2
 wb = load_workbook("Trading_statistics.xlsx")
-ws = wb.active
 
-# TODO: dobbiamo selezionare noi il foglio attivo. Come si fa?
+# Select the proper sheet, otherwise we are not sure which one we will write to.
+ws = wb['Operazioni']
 
 
 # Calculate necessary rows
@@ -74,7 +75,7 @@ if (duplicated is False) or (force_duplication == "Y"):
             data = operation[col - 1]
             # Convert the column number into the letter
             char = get_column_letter(col)
-            ws[char + str(row)].value = data
+            ws.cell(row, col).value = data
     print("Data inserted")
 else:
     print("Data not inserted")
