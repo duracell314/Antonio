@@ -1,6 +1,4 @@
 from openpyxl import Workbook, load_workbook
-from openpyxl.utils import get_column_letter
-import datetime
 
 
 def is_valid_date(year, month, day):
@@ -312,5 +310,5 @@ ws.cell(12 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).v
 ws.cell(13 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(Average_Lose_p, 2)) + CURRENCY
 ws.cell(14 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(Win_loss_p, 2)) + CURRENCY
 
-# Save the work
+# Save the statistics.
 wb.save("Trading_statistics.xlsx")
