@@ -1,5 +1,6 @@
 from openpyxl import Workbook, load_workbook
-
+import Parameters as prm
+import StatisticsPerShares
 
 def is_valid_date(year, month, day):
     """
@@ -24,35 +25,8 @@ wb = load_workbook("Trading_statistics.xlsx")
 wo = wb['Operazioni']
 ws = wb['Statistiche']
 
-# METRICS OF EXCEL SHEET 'Operazioni'
-"""
-"ROW START" is the row we actually start to work in excel sheet.
-We cannot specify ROW END because we will add new row as we have new operation results.
-The column that are meaningful are the ones between 1 and 4 (Operation, Openind date, Close date, result)
-Since the first is kept for the heading we start from position two.
-"""
-ROW_START_OPERATIONS = 2
-COLUMN_START_OPERATIONS = 1
-COLUMN_END_OPERATIONS = 4
-
-# METRICS OF EXCEL SHEET 'Statistiche'
-"""
-ROW_START_STATISTICS è la cella da cui partono le statistiche sul foglio excel.
-Row distance beetween total statistics, last day statistics and selected day statistics.
-It is important to not move those cells on excel sheet.
-COLUMN_SHIFT_STATISTICS indicates the cells were we have to insert the statistics of a salected period.
-"""
-ROW_START_STATISTICS = 5
-NUMBER_OF_STATISTICS = 10
-ROW_SHIFT_STATISTICS = 15
-COLUMN_SHIFT_STATISTICS = 7
-COLUMN_STATISTIC = 5
-
-# The currency we are working on excel sheets.
-CURRENCY = "$"
-
 # Then we iterate through the rows of the operations done.
-rows = wo.iter_rows(min_row=ROW_START_OPERATIONS, min_col=COLUMN_START_OPERATIONS, max_col=COLUMN_END_OPERATIONS)
+rows = wo.iter_rows(min_row=prm.ROW_START_OPERATIONS, min_col=prm.COLUMN_START_OPERATIONS, max_col=prm.COLUMN_END_OPERATIONS)
 
 # We declare 4 lists, to divide and store the information.
 Operations = []
@@ -262,53 +236,53 @@ else:
     Win_loss_p = 0
 
 # Write all data in the sheets.
-ws.cell(5, COLUMN_STATISTIC).value = total_operations
-ws.cell(6, COLUMN_STATISTIC).value = str(round(net_income, 2)) + CURRENCY
-ws.cell(7, COLUMN_STATISTIC).value = gain_operations
-ws.cell(8, COLUMN_STATISTIC).value = lose_operations
-ws.cell(9, COLUMN_STATISTIC).value = str(Batting_Average) + "%"
-ws.cell(10, COLUMN_STATISTIC).value = str(round(win, 2)) + CURRENCY
-ws.cell(11, COLUMN_STATISTIC).value = str(round(lose, 2)) + CURRENCY
-ws.cell(12, COLUMN_STATISTIC).value = str(round(Average_Win, 2)) + CURRENCY
-ws.cell(13, COLUMN_STATISTIC).value = str(round(Average_Lose, 2)) + CURRENCY
-ws.cell(14, COLUMN_STATISTIC).value = str(round(Win_loss, 2)) + CURRENCY
+ws.cell(5, prm.COLUMN_STATISTIC).value = total_operations
+ws.cell(6, prm.COLUMN_STATISTIC).value = str(round(net_income, 2)) + prm.CURRENCY
+ws.cell(7, prm.COLUMN_STATISTIC).value = gain_operations
+ws.cell(8, prm.COLUMN_STATISTIC).value = lose_operations
+ws.cell(9, prm.COLUMN_STATISTIC).value = str(Batting_Average) + "%"
+ws.cell(10, prm.COLUMN_STATISTIC).value = str(round(win, 2)) + prm.CURRENCY
+ws.cell(11, prm.COLUMN_STATISTIC).value = str(round(lose, 2)) + prm.CURRENCY
+ws.cell(12, prm.COLUMN_STATISTIC).value = str(round(Average_Win, 2)) + prm.CURRENCY
+ws.cell(13, prm.COLUMN_STATISTIC).value = str(round(Average_Lose, 2)) + prm.CURRENCY
+ws.cell(14, prm.COLUMN_STATISTIC).value = str(round(Win_loss, 2)) + prm.CURRENCY
 
 # Last day statistics
-ws.cell(5 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = total_operations_l
-ws.cell(6 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(net_income_l, 2)) + CURRENCY
-ws.cell(7 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = gain_operations_l
-ws.cell(8 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = lose_operations_l
-ws.cell(9 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(Batting_Average_l) + "%"
-ws.cell(10 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(win_l, 2)) + CURRENCY
-ws.cell(11 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(lose_l, 2)) + CURRENCY
-ws.cell(12 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Average_Win_l, 2)) + CURRENCY
-ws.cell(13 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Average_Lose_l, 2)) + CURRENCY
-ws.cell(14 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Win_loss_l, 2)) + CURRENCY
+ws.cell(5 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = total_operations_l
+ws.cell(6 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(net_income_l, 2)) + prm.CURRENCY
+ws.cell(7 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = gain_operations_l
+ws.cell(8 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = lose_operations_l
+ws.cell(9 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(Batting_Average_l) + "%"
+ws.cell(10 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(win_l, 2)) + prm.CURRENCY
+ws.cell(11 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(lose_l, 2)) + prm.CURRENCY
+ws.cell(12 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Average_Win_l, 2)) + prm.CURRENCY
+ws.cell(13 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Average_Lose_l, 2)) + prm.CURRENCY
+ws.cell(14 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Win_loss_l, 2)) + prm.CURRENCY
 
 
 # Selected day statistics
-ws.cell(5 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = total_operations_s
-ws.cell(6 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(net_income_s, 2)) + CURRENCY
-ws.cell(7 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = gain_operations_s
-ws.cell(8 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = lose_operations_s
-ws.cell(9 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(Batting_Average_s) + "%"
-ws.cell(10 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(win_s, 2)) + CURRENCY
-ws.cell(11 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(lose_s, 2)) + CURRENCY
-ws.cell(12 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Average_Win_s, 2)) + CURRENCY
-ws.cell(13 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Average_Lose_s, 2)) + CURRENCY
-ws.cell(14 + 2 * ROW_SHIFT_STATISTICS, COLUMN_STATISTIC).value = str(round(Win_loss_s, 2)) + CURRENCY
+ws.cell(5 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = total_operations_s
+ws.cell(6 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(net_income_s, 2)) + prm.CURRENCY
+ws.cell(7 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = gain_operations_s
+ws.cell(8 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = lose_operations_s
+ws.cell(9 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(Batting_Average_s) + "%"
+ws.cell(10 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(win_s, 2)) + prm.CURRENCY
+ws.cell(11 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(lose_s, 2)) + prm.CURRENCY
+ws.cell(12 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Average_Win_s, 2)) + prm.CURRENCY
+ws.cell(13 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Average_Lose_s, 2)) + prm.CURRENCY
+ws.cell(14 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Win_loss_s, 2)) + prm.CURRENCY
 
 # Selected period statistics
-ws.cell(5 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = total_operations_p
-ws.cell(6 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(net_income_p, 2)) + CURRENCY
-ws.cell(7 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = gain_operations_p
-ws.cell(8 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = lose_operations_p
-ws.cell(9 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(Batting_Average_p) + "%"
-ws.cell(10 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(win_p, 2)) + CURRENCY
-ws.cell(11 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(lose_p, 2)) + CURRENCY
-ws.cell(12 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(Average_Win_p, 2)) + CURRENCY
-ws.cell(13 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(Average_Lose_p, 2)) + CURRENCY
-ws.cell(14 + ROW_SHIFT_STATISTICS, COLUMN_STATISTIC + COLUMN_SHIFT_STATISTICS).value = str(round(Win_loss_p, 2)) + CURRENCY
+ws.cell(5 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = total_operations_p
+ws.cell(6 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(net_income_p, 2)) + prm.CURRENCY
+ws.cell(7 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = gain_operations_p
+ws.cell(8 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = lose_operations_p
+ws.cell(9 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(Batting_Average_p) + "%"
+ws.cell(10 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(win_p, 2)) + prm.CURRENCY
+ws.cell(11 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(lose_p, 2)) + prm.CURRENCY
+ws.cell(12 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Average_Win_p, 2)) + prm.CURRENCY
+ws.cell(13 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Average_Lose_p, 2)) + prm.CURRENCY
+ws.cell(14 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Win_loss_p, 2)) + prm.CURRENCY
 
 # Save the statistics.
 wb.save("Trading_statistics.xlsx")
