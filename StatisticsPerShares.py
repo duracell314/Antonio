@@ -71,5 +71,6 @@ for index in range(0, len(Operations)):
     wa.cell(prm.ROW_START_STAT_PER_SHARE + index, prm.COLUMN_TOTAL_RES_STAT_PER_SHARE).value = str(round(Results[index], 2)) + prm.CURRENCY
     wa.cell(prm.ROW_START_STAT_PER_SHARE + index, prm.COLUMN_AVERAGE_RES_STAT_PER_SHARE).value = str(round(Average_Results[index], 2)) + prm.CURRENCY
 
+# TODO: Calcolare la migliore azione e la peggiore azione tradata.
 # Save the statistics.
 wb.save("Trading_statistics.xlsx")
