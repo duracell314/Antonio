@@ -2,6 +2,7 @@ from openpyxl import Workbook, load_workbook
 import Parameters as prm
 import StatisticsPerShares
 
+
 def is_valid_date(year, month, day):
     """
     This function tell us if the date inserted by the user is valid.
@@ -12,7 +13,7 @@ def is_valid_date(year, month, day):
     :return: True if date is valid, False if it is not.
     """
     day_count_for_month = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    if year%4==0 and (year%100 != 0 or year%400==0):
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
         day_count_for_month[2] = 29
     return (1 <= month <= 12 and 1 <= day <= day_count_for_month[month])
 
@@ -33,7 +34,6 @@ Operations = []
 Openings = []
 Closings = []
 Results = []
-
 
 # We iterate through the tuples of rows and we add the data to a new element of the list
 for stocks, open, close, res in rows:
@@ -114,9 +114,21 @@ lose_operations_l = 0
 lose_operations_s = 0
 lose_operations_p = 0
 
+# General statistics
+max_win = 0
+max_lose = 0
+day_start = min(Openings)
+last_day = max(Openings)
+earn_per_trade = 0
+# TODO: implementare calcolo giorno migliore e giorno peggiore.
+best_day = 0
+worst_day = 0
+
 for index, result in enumerate(Results):
     if result >= 0.0:
         gain_operations += 1
+        if result > max_win:
+            max_win = result
         win += result
         if Openings[index] == last_day:
             total_operations_l += 1
@@ -134,6 +146,8 @@ for index, result in enumerate(Results):
         # We calculate the number of operation with loses.
         lose_operations += 1
         lose += result
+        if result < max_lose:
+            max_lose = result
         if Openings[index] == last_day:
             total_operations_l += 1
             lose_operations_l += 1
@@ -154,86 +168,91 @@ net_income_s = win_s + lose_s
 net_income_p = win_p + lose_p
 
 if total_operations != 0:
-    Batting_Average = round((100 * gain_operations/total_operations), 2)
+    Batting_Average = round((100 * gain_operations / total_operations), 2)
 else:
     Batting_Average = None
 
 if total_operations_l != 0:
-    Batting_Average_l = round((100 * gain_operations_l/total_operations_l), 2)
+    Batting_Average_l = round((100 * gain_operations_l / total_operations_l), 2)
 else:
     Batting_Average_l = None
 
 if total_operations_s != 0:
-    Batting_Average_s = round((100 * gain_operations_s/total_operations_s), 2)
+    Batting_Average_s = round((100 * gain_operations_s / total_operations_s), 2)
 else:
     Batting_Average_s = None
 
 if total_operations_p != 0:
-    Batting_Average_p = round((100 * gain_operations_p/total_operations_p), 2)
+    Batting_Average_p = round((100 * gain_operations_p / total_operations_p), 2)
 else:
     Batting_Average_p = None
 
 if gain_operations != 0:
-    Average_Win = win/gain_operations
+    Average_Win = win / gain_operations
 else:
     Average_Win = 0
 
 if gain_operations_l != 0:
-    Average_Win_l = win_l/gain_operations_l
+    Average_Win_l = win_l / gain_operations_l
 else:
     Average_Win_l = 0
 
 if gain_operations_s != 0:
-    Average_Win_s = win_s/gain_operations_s
+    Average_Win_s = win_s / gain_operations_s
 else:
     Average_Win_s = 0
 
 if gain_operations_p != 0:
-    Average_Win_p = win_p/gain_operations_p
+    Average_Win_p = win_p / gain_operations_p
 else:
     Average_Win_p = 0
 
 if lose_operations != 0:
-    Average_Lose = lose/lose_operations
+    Average_Lose = lose / lose_operations
 else:
     Average_Lose = 0
 
 if lose_operations_l != 0:
-    Average_Lose_l = lose_l/lose_operations_l
+    Average_Lose_l = lose_l / lose_operations_l
 else:
     Average_Lose_l = 0
 
 if lose_operations_s != 0:
-    Average_Lose_s = lose_s/lose_operations_s
+    Average_Lose_s = lose_s / lose_operations_s
 else:
     Average_Lose_s = 0
 
 if lose_operations_p != 0:
-    Average_Lose_p = lose_p/lose_operations_p
+    Average_Lose_p = lose_p / lose_operations_p
 else:
     Average_Lose_p = 0
 
 # N.B. Average_Lose is a negative number
 
 if Average_Lose != 0:
-    Win_loss = Average_Win/(-Average_Lose)
+    Win_loss = Average_Win / (-Average_Lose)
 else:
     Win_loss = 0
 
 if Average_Lose_l != 0:
-    Win_loss_l = Average_Win/(-Average_Lose_l)
+    Win_loss_l = Average_Win / (-Average_Lose_l)
 else:
     Win_loss_l = 0
 
 if Average_Lose_s != 0:
-    Win_loss_s = Average_Win/(-Average_Lose_s)
+    Win_loss_s = Average_Win / (-Average_Lose_s)
 else:
     Win_loss_s = 0
 
 if Average_Lose_p != 0:
-    Win_loss_p = Average_Win/(-Average_Lose_p)
+    Win_loss_p = Average_Win / (-Average_Lose_p)
 else:
     Win_loss_p = 0
+
+if total_operations != 0:
+    earn_per_trade = net_income / total_operations
+else:
+    earn_per_trade = 0
 
 # Write all data in the sheets.
 ws.cell(5, prm.COLUMN_STATISTIC).value = total_operations
@@ -259,7 +278,6 @@ ws.cell(12 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(A
 ws.cell(13 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Average_Lose_l, 2)) + prm.CURRENCY
 ws.cell(14 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(Win_loss_l, 2)) + prm.CURRENCY
 
-
 # Selected day statistics
 ws.cell(5 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = total_operations_s
 ws.cell(6 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(round(net_income_s, 2)) + prm.CURRENCY
@@ -274,15 +292,31 @@ ws.cell(14 + 2 * prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC).value = str(rou
 
 # Selected period statistics
 ws.cell(5 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = total_operations_p
-ws.cell(6 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(net_income_p, 2)) + prm.CURRENCY
+ws.cell(6 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(net_income_p, 2)) + prm.CURRENCY
 ws.cell(7 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = gain_operations_p
 ws.cell(8 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = lose_operations_p
-ws.cell(9 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(Batting_Average_p) + "%"
-ws.cell(10 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(win_p, 2)) + prm.CURRENCY
-ws.cell(11 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(lose_p, 2)) + prm.CURRENCY
-ws.cell(12 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Average_Win_p, 2)) + prm.CURRENCY
-ws.cell(13 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Average_Lose_p, 2)) + prm.CURRENCY
-ws.cell(14 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(round(Win_loss_p, 2)) + prm.CURRENCY
+ws.cell(9 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    Batting_Average_p) + "%"
+ws.cell(10 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(win_p, 2)) + prm.CURRENCY
+ws.cell(11 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(lose_p, 2)) + prm.CURRENCY
+ws.cell(12 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(Average_Win_p, 2)) + prm.CURRENCY
+ws.cell(13 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(Average_Lose_p, 2)) + prm.CURRENCY
+ws.cell(14 + prm.ROW_SHIFT_STATISTICS, prm.COLUMN_STATISTIC + prm.COLUMN_SHIFT_STATISTICS).value = str(
+    round(Win_loss_p, 2)) + prm.CURRENCY
+
+# Save general statistics
+ws["O4"].value = str(round(max_win, 2)) + prm.CURRENCY
+ws["O5"].value = str(round(max_lose, 2)) + prm.CURRENCY
+ws["O6"].value = day_start
+ws["O7"].value = last_day
+ws["O8"].value = str(round(earn_per_trade, 2)) + prm.CURRENCY
+# ws["O9"].value = best_day
+# ws["O10"].value = worst_day
 
 # Save the statistics.
 wb.save("Trading_statistics.xlsx")
