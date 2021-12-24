@@ -1,6 +1,8 @@
 from openpyxl import Workbook, load_workbook
 import Parameters as prm
-import StatisticsPerShares
+from datetime import datetime
+from openpyxl.worksheet.copier import WorksheetCopy
+# import StatisticsPerShares
 
 
 def is_valid_date(year, month, day):
@@ -18,14 +20,21 @@ def is_valid_date(year, month, day):
     return (1 <= month <= 12 and 1 <= day <= day_count_for_month[month])
 
 
-wb = load_workbook("Trading_statistics.xlsx")
-
+wb = load_workbook("etoro-account-statement.xlsx")
+wbt = load_workbook("Trading_statistics.xlsx")
+wt = wbt['Statistiche']
+# We create new sheet were we will put our data.
+wb.create_sheet(title="Statistica_per_azione")
+wb.create_sheet(title="Statistiche")
 # Select the proper sheets.
+
+
 # 'wo' is the sheet were are saved the operations
 # 'ws' is the sheet were we will save the Statistics
-wo = wb['Operazioni']
+wo = wb['Posizioni chiuse']
 ws = wb['Statistiche']
-
+# We copy the template.
+# TODO: copiare il template con tutte le voci
 # Then we iterate through the rows of the operations done.
 rows = wo.iter_rows(min_row=prm.ROW_START_OPERATIONS, min_col=prm.COLUMN_START_OPERATIONS, max_col=prm.COLUMN_END_OPERATIONS)
 
@@ -34,34 +43,75 @@ Operations = []
 Openings = []
 Closings = []
 Results = []
+Leverages = []
+Copied = []
+Types = []
+Notes = []
 
 # We iterate through the tuples of rows and we add the data to a new element of the list
-for stocks, open, close, res in rows:
+for id, stocks, imp, unity, open, close, lev, spread, res, t_op, t_cl, t_tp, t_sl, comm, copy, typ, isin, note in rows:
+    # Check if the row is comletely filled.
     if stocks.value != None and open.value != None and close.value != None and res.value != None:
-        Operations.append(stocks.value)
-        Openings.append(open.value)
-        Closings.append(close.value)
-        Results.append(res.value)
+        if copy.value == "-":
+            # The operation was not copied.
+            Operations.append(stocks.value)
+            # Covert a string (given by etoro report) into a date time variable.
+            # '%Y' is used for the year format in 4 digits: 2021.
+            # '%y' is used for the year format in 2 digits: 21.
+            date_time_op_obj = datetime.strptime(open.value, '%d/%m/%Y %H:%M:%S')
+            date_time_cl_obj = datetime.strptime(close.value, '%d/%m/%Y %H:%M:%S')
+            Openings.append(date_time_op_obj)
+            Closings.append(date_time_cl_obj)
+            Results.append(res.value)
+            Leverages.append(lev.value)
+            Copied.append(copy.value)
+            Types.append(typ.value)
+            Notes.append(note.value)
+        else:
+        # We enter the else beacuse the operation was copied.
+            if prm.COPYTRADER_ENABLE == False:
+                # No operation needed, we don't want to add Copytrading in out statistics.
+                pass
+            else:
+                # We add copy trading operations.
+                Operations.append(stocks.value)
+                # Covert a string (given by etoro report) into a date time variable.
+                # '%Y' is used for the year format in 4 digits: 2021.
+                # '%y' is used for the year format in 2 digits: 21.
+                date_time_op_obj = datetime.strptime(open.value, '%d/%m/%Y %H:%M:%S')
+                date_time_cl_obj = datetime.strptime(close.value, '%d/%m/%Y %H:%M:%S')
+                Openings.append(date_time_op_obj)
+                Closings.append(date_time_cl_obj)
+                Results.append(res.value)
+                Leverages.append(lev.value)
+                Copied.append(copy.value)
+                Types.append(typ.value)
+                Notes.append(note.value)
     elif stocks.value != None or open.value != None or close.value != None or res.value != None:
         # we enter in this conditional block if we have a partially filled row (for example if we missed one cell).
         Operations.append(None)
         Openings.append(None)
         Closings.append(None)
         Results.append(None)
+        Leverages.append(None)
+        Copied.append(None)
+        Types.append(None)
+        Notes.append(None)
         print("Erroneus data at excel rows: {0}".format(len(Operations + 1)))
     else:
         # All the elements ot the rows are empty, no operation needed.
         pass
 
 # We check if all the rows have the same length:
-if len(Operations) == len(Openings) and len(Operations) == len(Closings) and len(Operations) == len(Results):
+if len(Operations) == len(Openings) and len(Operations) == len(Closings) and len(Operations) == len(Results) and\
+    len(Operations) == len(Leverages) and len(Operations) == len(Copied) and len(Operations) == len(Types) and\
+    len(Operations) == len(Notes):
     # All it should be, no need to perform operations or raising any warning.
     pass
 else:
     print("WARNING, not all the rows have the same length! Please check 'Operazioni' sheet in excel file")
 
 # Timing data, will be necessary to calculate the statistics in a certain period of time.
-# start_day and end_day will be needed to calculate the statistics in a certain period of the time.
 last_day = max(Openings)
 # We save the last day on Excel sheet 'Statistics'
 ws["E19"].value = last_day
@@ -78,9 +128,7 @@ if is_valid_date(year, month, day):
 else:
     selected_day = ws['E34'].value
 """
-selected_day = ws['E34'].value
-start_day = ws['K19'].value
-end_day = ws['L19'].value
+
 
 # TODO: implementare i controlli sulle date. la data di fine deve essere minore della data di inizio ecc
 
@@ -134,11 +182,11 @@ for index, result in enumerate(Results):
             total_operations_l += 1
             gain_operations_l += 1
             win_l += result
-        if Openings[index] == selected_day:
+        if Openings[index] == prm.selected_day:
             total_operations_s += 1
             gain_operations_s += 1
             win_s += result
-        if Openings[index] >= start_day and Openings[index] <= end_day:
+        if Openings[index] >= prm.start_day and Openings[index] <= prm.end_day:
             total_operations_p += 1
             gain_operations_p += 1
             win_p += result
@@ -152,11 +200,11 @@ for index, result in enumerate(Results):
             total_operations_l += 1
             lose_operations_l += 1
             lose_l += result
-        if Openings[index] == selected_day:
+        if Openings[index] == prm.selected_day:
             total_operations_s += 1
             lose_operations_s += 1
             lose_s += result
-        if Openings[index] >= start_day and Openings[index] <= end_day:
+        if Openings[index] >= prm.start_day and Openings[index] <= prm.end_day:
             total_operations_p += 1
             lose_operations_p += 1
             lose_p += result
@@ -319,4 +367,4 @@ ws["O8"].value = str(round(earn_per_trade, 2)) + prm.CURRENCY
 # ws["O10"].value = worst_day
 
 # Save the statistics.
-wb.save("Trading_statistics.xlsx")
+wb.save("etoro-account-statement.xlsx")

@@ -2,12 +2,13 @@ from openpyxl import Workbook, load_workbook
 import Parameters as prm
 
 
-wb = load_workbook("Trading_statistics.xlsx")
+wb = load_workbook("etoro-account-statement.xlsx")
+
 
 # Select the proper sheets.
 # 'wo' is the sheet were are saved the operations
 # 'ws' is the sheet were we will save the Statistics
-wo = wb['Operazioni']
+wo = wb['Posizioni chiuse']
 wa = wb['Statistica_per_azione']
 
 # Initialize the sheet:

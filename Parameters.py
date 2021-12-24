@@ -1,3 +1,16 @@
+import datetime
+# STATISTICS TIMING
+"""
+selected_day select a particular day. Statistics will be calculated for that day.
+start_day - end_day. Statistics will be calculated for a particular period of time.
+USE THIS FORMAT:
+selected_day = 14/12/2021
+start_day = 08/12/2021
+end_day = 14/12/2021
+"""
+selected_day = datetime.datetime(2021, 12, 14)
+start_day = datetime.datetime(2021, 12, 8)
+end_day = datetime.datetime(2021, 12, 14)
 # METRICS OF EXCEL SHEET 'Operazioni'
 """
 "ROW START" is the row we actually start to work in excel sheet.
@@ -7,7 +20,7 @@ Since the first is kept for the heading we start from position two.
 """
 ROW_START_OPERATIONS = 2
 COLUMN_START_OPERATIONS = 1
-COLUMN_END_OPERATIONS = 4
+COLUMN_END_OPERATIONS = 18
 
 # METRICS OF EXCEL SHEET 'Statistiche'
 """
@@ -31,3 +44,8 @@ COLUMN_AVERAGE_RES_STAT_PER_SHARE = 4
 
 # The currency we are working on excel sheets.
 CURRENCY = "$"
+
+
+# CALCULATIONS OPTIONS
+# if COPYTRADER_ENABLE = False copytrading operation will not be taken in account.
+COPYTRADER_ENABLE = False
