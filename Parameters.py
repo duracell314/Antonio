@@ -9,8 +9,20 @@ start_day = 08/12/2021
 end_day = 14/12/2021
 """
 selected_day = datetime.date(2021, 12, 14)
-start_day = datetime.date(2021, 12, 8)
-end_day = datetime.date(2021, 12, 14)
+start_day = datetime.date(2021, 12, 6)
+end_day = datetime.date(2021, 12, 24)
+
+# MAXIMUM DAYS LENGTH
+"""
+If you want to consider only short term operations you have to fix a days limit: 
+if closing date - opening date > OPERATION_LENGTH the operation statistics will not be calculated.
+Worst case allowed: friday (opening) - saturday- sunday - monday - tuesday (closing)
+"""
+MAXIMUM_DAYS_OPERATION_LENGTH = 2
+
+# if COPYTRADER_ENABLE = False copytrading operation will not be taken in account.
+COPYTRADER_ENABLE = False
+
 # METRICS OF EXCEL SHEET 'Operazioni'
 """
 "ROW START" is the row we actually start to work in excel sheet.
@@ -44,8 +56,3 @@ COLUMN_AVERAGE_RES_STAT_PER_SHARE = 4
 
 # The currency we are working on excel sheets.
 CURRENCY = "$"
-
-
-# CALCULATIONS OPTIONS
-# if COPYTRADER_ENABLE = False copytrading operation will not be taken in account.
-COPYTRADER_ENABLE = False

@@ -1,8 +1,7 @@
 from openpyxl import Workbook, load_workbook
 import Parameters as prm
+import functions as functions
 from datetime import datetime
-from openpyxl.worksheet.copier import WorksheetCopy
-# import StatisticsPerShares
 
 wb = load_workbook("etoro-account-statement.xlsx")
 # We create new sheet were we will put our data.
@@ -13,9 +12,9 @@ for sheet in sheets:
         std = wb["Statistiche"]
         wb.remove(std)
 wb.create_sheet(title="Statistiche")
+
+
 # Select the proper sheets.
-
-
 # 'wo' is the sheet were are saved the operations
 # 'ws' is the sheet were we will save the Statistics
 wo = wb['Posizioni chiuse']
@@ -35,43 +34,52 @@ Notes = []
 
 # We iterate through the tuples of rows and we add the data to a new element of the list
 for id, stocks, imp, unity, open, close, lev, spread, res, t_op, t_cl, t_tp, t_sl, comm, copy, typ, isin, note in rows:
-    # Check if the row is comletely filled.
+    # Check if the row is completely filled.
     if stocks.value != None and open.value != None and close.value != None and res.value != None:
         if copy.value == "-":
             # The operation was not copied.
-            Operations.append(stocks.value)
             # Covert a string (given by etoro report) into a date time variable.
             # '%Y' is used for the year format in 4 digits: 2021.
             # '%y' is used for the year format in 2 digits: 21.
             date_time_op_obj = datetime.strptime(open.value, '%d/%m/%Y %H:%M:%S')
             date_time_cl_obj = datetime.strptime(close.value, '%d/%m/%Y %H:%M:%S')
-            Openings.append(date_time_op_obj)
-            Closings.append(date_time_cl_obj)
-            Results.append(res.value)
-            Leverages.append(lev.value)
-            Copied.append(copy.value)
-            Types.append(typ.value)
-            Notes.append(note.value)
-        else:
-        # We enter the else beacuse the operation was copied.
-            if prm.COPYTRADER_ENABLE == False:
-                # No operation needed, we don't want to add Copytrading in out statistics.
-                pass
-            else:
-                # We add copy trading operations.
-                Operations.append(stocks.value)
-                # Covert a string (given by etoro report) into a date time variable.
-                # '%Y' is used for the year format in 4 digits: 2021.
-                # '%y' is used for the year format in 2 digits: 21.
-                date_time_op_obj = datetime.strptime(open.value, '%d/%m/%Y %H:%M:%S')
-                date_time_cl_obj = datetime.strptime(close.value, '%d/%m/%Y %H:%M:%S')
+            operation_days = functions.days_between(date_time_cl_obj, date_time_op_obj)
+            # If the time between opening and closing is greater than our parameter (number of days) the operation will
+            # not be taken in account
+            if operation_days <= prm.MAXIMUM_DAYS_OPERATION_LENGTH:
                 Openings.append(date_time_op_obj)
                 Closings.append(date_time_cl_obj)
+                Operations.append(stocks.value)
                 Results.append(res.value)
                 Leverages.append(lev.value)
                 Copied.append(copy.value)
                 Types.append(typ.value)
                 Notes.append(note.value)
+            else:
+                # Operation too long, will not be included into the statistic.
+                pass
+        else:
+        # We enter the else beacuse the operation was copied.
+            if prm.COPYTRADER_ENABLE == False:
+                # No operation needed, we don't want to calculate Copytrading operations in our statistics.
+                pass
+            else:
+                # The operation was not copied.
+                # Covert a string (given by etoro report) into a date time variable.
+                # '%Y' is used for the year format in 4 digits: 2021.
+                # '%y' is used for the year format in 2 digits: 21.
+                date_time_op_obj = datetime.strptime(open.value, '%d/%m/%Y %H:%M:%S')
+                date_time_cl_obj = datetime.strptime(close.value, '%d/%m/%Y %H:%M:%S')
+                operation_days = functions.days_between(date_time_cl_obj, date_time_op_obj)
+                if operation_days <= prm.MAXIMUM_DAYS_OPERATION_LENGTH:
+                    Openings.append(date_time_op_obj)
+                    Closings.append(date_time_cl_obj)
+                    Operations.append(stocks.value)
+                    Results.append(res.value)
+                    Leverages.append(lev.value)
+                    Copied.append(copy.value)
+                    Types.append(typ.value)
+                    Notes.append(note.value)
     elif stocks.value != None or open.value != None or close.value != None or res.value != None:
         # we enter in this conditional block if we have a partially filled row (for example if we missed one cell).
         Operations.append(None)
