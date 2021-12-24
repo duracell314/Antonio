@@ -4,9 +4,8 @@ import datetime
 selected_day select a particular day. Statistics will be calculated for that day.
 start_day - end_day. Statistics will be calculated for a particular period of time.
 USE THIS FORMAT:
-selected_day = 14/12/2021
-start_day = 08/12/2021
-end_day = 14/12/2021
+datetime.date(yyyy, m, d)
+DO NOT USE ZEROS---> Example for 06/02/2012 fill datetime.date(2021, 2, 6) and not datetime.date(2021, 02, 06)
 """
 selected_day = datetime.date(2021, 12, 14)
 start_day = datetime.date(2021, 12, 6)
