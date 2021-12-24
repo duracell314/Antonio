@@ -8,9 +8,9 @@ selected_day = 14/12/2021
 start_day = 08/12/2021
 end_day = 14/12/2021
 """
-selected_day = datetime.datetime(2021, 12, 14)
-start_day = datetime.datetime(2021, 12, 8)
-end_day = datetime.datetime(2021, 12, 14)
+selected_day = datetime.date(2021, 12, 14)
+start_day = datetime.date(2021, 12, 8)
+end_day = datetime.date(2021, 12, 14)
 # METRICS OF EXCEL SHEET 'Operazioni'
 """
 "ROW START" is the row we actually start to work in excel sheet.
@@ -29,11 +29,11 @@ Row distance beetween total statistics, last day statistics and selected day sta
 It is important to not move those cells on excel sheet.
 COLUMN_SHIFT_STATISTICS indicates the cells were we have to insert the statistics of a salected period.
 """
-ROW_START_STATISTICS = 5
+ROW_START_STATISTICS = 2
 NUMBER_OF_STATISTICS = 10
 ROW_SHIFT_STATISTICS = 15
 COLUMN_SHIFT_STATISTICS = 7
-COLUMN_STATISTIC = 5
+COLUMN_STATISTIC = 2
 
 # METRICS OF EXCEL SHEET 'Statistiche_per_azione'
 ROW_START_STAT_PER_SHARE = 2
