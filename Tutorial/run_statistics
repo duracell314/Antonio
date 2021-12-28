@@ -1,0 +1,52 @@
+#!/bin/sh
+<< COMMENT
+    If you are executing this sheel from IDE the initial path would be already settedn by the beginning,
+    so these cd command will not be executed. (You will notice an error).
+    If you execute the script from finder you will start from main path and you need cd commands to enter
+    the project path
+COMMENT
+<< COMMENT2
+    Non usare mai gli spazi, danno problemi
+    myname=George --> OK
+    myname=George Fred  -> NOK
+    myname="George Fred" -> OK
+    myname= "George Fred" -> NOK
+    I nomi delle variabili sono case sensitive.
+    Ogni variabile è trattata come stringa.
+COMMENT2
+<< COMMENT3
+    echo serve come printf
+COMMENT3
+<<COMMENT4
+read x -> cosi leggi il comando dall'utente e lo salvi nella variabile x
+COMMENT4
+x=10
+# Usa il dollaro quando vuoi estrarre il valore di una variabile.
+y=$x
+echo $x
+#read var
+#echo $var
+p=`pwd`
+#echo $p
+#echo p
+#BASEDIR=$(dirname "$0")
+#echo "$BASEDIR"
+#cd $BASEDIR
+#echo "\$0: $0"
+#filename="${fullfile##*/}"
+#echo $filename
+ABSOLUTE_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
+echo $ABSOLUTE_PATH
+echo ----------
+SCRIPT_PATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+echo $SCRIPT_PATH
+echo --------------------------------
+pwd
+cd Documents
+pwd
+cd "Didattica e formazione"
+pwd
+cd trading
+pwd
+cd Antonio
+python3 run.py
