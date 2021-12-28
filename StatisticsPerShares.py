@@ -6,7 +6,7 @@ from datetime import datetime
 wb = load_workbook("etoro-account-statement.xlsx")
 
 # We create new sheet were we will put our data.
-# We don't want duplicates, then if the sheet already exists we remove it before create a new one:
+# We don't want duplicates, then if the sheet already exists we remove it before creating a new one:
 sheets = wb.sheetnames
 for sheet in sheets:
     if sheet == "Statistica_per_azione":
@@ -102,7 +102,7 @@ for index, stock in enumerate(Operations):
 
 # Now it is time to save data into the excel sheet: the header and then the statistics
 wa.cell(prm.ROW_START_STAT_PER_SHARE - 1, prm.COLUMN_SHARES_STAT_PER_SHARE).value = "Share"
-wa.cell(prm.ROW_START_STAT_PER_SHARE - 1, prm.COLUMN_NUM_OF_SHARES_STAT_PER_SHARE).value =  "Number of shares"
+wa.cell(prm.ROW_START_STAT_PER_SHARE - 1, prm.COLUMN_NUM_OF_SHARES_STAT_PER_SHARE).value = "Number of shares"
 wa.cell(prm.ROW_START_STAT_PER_SHARE - 1, prm.COLUMN_TOTAL_RES_STAT_PER_SHARE).value = "Total result"
 wa.cell(prm.ROW_START_STAT_PER_SHARE - 1, prm.COLUMN_AVERAGE_RES_STAT_PER_SHARE).value = "Average result"
 for index in range(0, len(Operations)):

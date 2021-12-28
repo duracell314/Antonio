@@ -22,7 +22,7 @@ ws = wb['Statistiche']
 # Then we iterate through the rows of the operations done.
 rows = wo.iter_rows(min_row=prm.ROW_START_OPERATIONS, min_col=prm.COLUMN_START_OPERATIONS, max_col=prm.COLUMN_END_OPERATIONS)
 
-# We declare 4 lists, to divide and store the information.
+# We declare 8 lists, to divide and store the information.
 Operations = []
 Openings = []
 Closings = []
