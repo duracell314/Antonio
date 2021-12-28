@@ -1,3 +1,2 @@
-import InsertNewOperations
 import Calculate_Statistics
 import StatisticsPerShares
